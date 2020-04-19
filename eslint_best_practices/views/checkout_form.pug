@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  include includes/cart_items_form.pug
+  .row
+    .col
+      form#payment-form.mt-3(action=`/order/checkout`, method='POST')
+        .form-group
+          label(for='address') Address
+          input#address.form-control(type='text', name='address', value=(undefined===order)?'':order.address, required='true')
+        .form-group
+          label(for='card-element') Credit or debit card (test card number: 4242424242424242)
+          #card-element.border.border-light
+          #card-errors(role='alert')
+        button.btn.btn-primary.float-right.mb-5(type='submit') Confirm Payment
+  script(src='/javascripts/checkout.js')

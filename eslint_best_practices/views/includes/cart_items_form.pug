@@ -1,0 +1,39 @@
+.row
+  .col
+    table.table
+      thead
+        tr
+          th.w-50(scope='col') Item
+          th.w-10(scope='col') Price
+          th.w-20(scope='col') Quantity
+          th.w-10(scope='col') Subtotal
+          th.w-10(scope='col')
+      tbody
+        each record in records
+          tr
+            td
+              .row
+                .col-sm-2
+                  img.img-responsive.mt-4(src=`/catalog/image/${record.item.image}`, alt='Item Image', style='max-width: 100%')
+                .col-sm-10
+                  h4=record.item.name
+                  p
+                    | #{record.item.description}
+            td 
+              | $#{record.item.price}
+            td
+              a.btn.btn-sm(href='#')
+                i.fa.fa-plus(aria-hidden='true')
+              | #{record.qty}
+              a.btn.btn-sm(href='#')
+                i.fa.fa-minus(aria-hidden='true')
+            td 
+              - var subtotal = record.item.price * record.qty
+              | #{subtotal}
+            td
+              a.btn.btn-md(href='#')
+                i.fa.fa-trash-o
+.row
+  .col
+    hr
+    h3.float-right Total Quantity: #{total.totalQty}, Total Price #{total.totalPrice}

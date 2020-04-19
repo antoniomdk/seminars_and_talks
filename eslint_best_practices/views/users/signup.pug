@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+  .row.mt-3
+    .col-md-4.col-md-offset-4
+      h2 Sign up
+      form.mt-3(action='/user/signup', method='POST')
+        .form-group
+          label(for='email') Email
+          input#email.form-control(type='text', name='email', value=(undefined===user)?'':user.email required='true')
+        .form-group
+          label(for='username') Username
+          input#username.form-control(type='text', name='username', value=(undefined===user)?'':user.username required='true')
+        .form-group
+          label(for='password') Password
+          input#password.form-control(type='password', name='password', value=(undefined===user)?'':user.password required='true')
+        input(name='_csrf', type='hidden', value=csrfToken)
+        button.btn.btn-primary(type='submit') Submit

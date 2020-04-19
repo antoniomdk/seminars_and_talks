@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  .row.mt-3  
+    .card-columns 
+      each item in items      
+        .card
+          img.card-img-top.img-fluid(src=`/catalog/image/${item.image}`, alt=`Item ${item.name} image`)
+          .card-body
+            h5.card-title.text-capitalize
+              a.text-decoration-none(href=`/catalog/item/${item.id}`) #{item.name}
+            .clearfix
+              p.card-text.float-left.mr-2
+                | #[strong $#{item.price}] - #{item.qtyAvailable} left in store
+              a.btn.btn-primary.float-right(href=`/cart/add-to-cart/${item.id}`) Add to cart

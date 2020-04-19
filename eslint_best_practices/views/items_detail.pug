@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  .card.mb-3.h-75
+    .row.no-gutters.p-3
+      .col-md-4
+        img.card-img.my-5(src=`/catalog/image/${item.image}`, alt='Item Image')
+      .col-md-8
+        .card-body
+          h5.card-title.mb-5 Item Name: #{item.name}
+          h6.card-subtitle.mb-3 Price: $#{item.price}
+          p.cart-text
+            | Quatity available: #{item.qtyAvailable} left in store.
+          p.cart-text 
+            | Sold by: #{item.seller.username}
+          p.cart-text 
+            | Category: #{item.category}          
+          p.card-text
+            | Description: #{item.description}
+        a.btn.btn-primary(href=`/cart/add-to-cart/${item.id}`) Add to cart

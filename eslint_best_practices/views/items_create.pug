@@ -1,0 +1,34 @@
+extends layout
+
+block content
+  .row.my-3
+    .col-md-4
+      h2 Sell items
+      form.mt-3(action='/catalog/item/create', method='POST', enctype='multipart/form-data')
+        .form-group
+          label(for='name') Item name
+          input#name.form-control(type='text', name='name', value=(undefined===item)?'':item.email required='true')
+        .form-group
+          label(for='price') Price
+          input#price.form-control(type='number', name='price', value=(undefined===item)?'':item.price, step='any' required='true')
+        .form-group
+          label(for='description') Description
+          input#description.form-control(type='text', name='description', value=(undefined===item)?'':item.description required='true')  
+        .form-group
+          label(for='qtyAvailable') Number of items available
+          input#qtyAvailable.form-control(type='number', name='qtyAvailable', value=(undefined===item)?'':item.qtyAvailable, step='1', min="0", required='true')
+        .form-group
+          label(for='category') Category
+          select#category.form-control(type='select', placeholder="Select a category", name="category",  required='true')
+            - const categories = ['Clothes', 'Books', 'Electronics', 'Food', 'Other']
+            for category in categories
+              if item
+                option(value=category, selected=(category===item.category)?'selected':false ) #{category}
+              else
+                option(value=category) #{category}
+        .form-group
+          label(for='image') Item image
+          input#image.form-control(type='file', name='image', accept=".png, .jpg, .jpeg", aria-describedby='fileHelp')
+          #fileHelp.form-text.text-muted PNG or JPG (Max 2MB)          
+        input(name='_csrf', type='hidden', value=csrfToken)
+        button.btn.btn-primary(type='submit') Submit
