@@ -9,6 +9,10 @@ https://www.bernat.tech/the-state-of-type-hints-in-python/
 
 https://mypy.readthedocs.io/en/stable/stubs.html
 
+[Real World Example (Fastapi)](https://github.com/tiangolo/fastapi/blob/master/fastapi/applications.py#L29)
+
+[Real World Example (Fast.ai)](https://github.com/fastai/fastai/blob/master/fastai/tabular/learner.py)
+
 ## 2. Data Structures
 
 https://towardsdatascience.com/pythons-collections-module-high-performance-container-data-types-cb4187afb5fc
@@ -22,8 +26,15 @@ https://pypi.org/project/dataclasses/
 
 https://realpython.com/introduction-to-python-generators/
 
+[Real World Example (Django)](https://docs.djangoproject.com/en/3.0/_modules/django/core/files/base/#File)
 
 ## 4. Decorators and Context Managers
+
+[Real World Example (Flask)](https://github.com/pallets/flask/blob/master/src/flask/app.py#L1209)
+
+[Real World Example (Pygments)](https://github.com/pygments/pygments/blob/master/pygments/lexer.py#L37)
+
+[Real World Example (Django)](https://github.com/django/django/blob/master/django/db/transaction.py#L135)
 
 
 ## 5. Asyncio
@@ -39,6 +50,7 @@ https://pymotw.com/3/inspect/index.html
 
 https://gorilla.readthedocs.io/en/latest/
 
+[Real World Example](https://github.com/mlflow/mlflow/blob/master/mlflow/lightgbm.py#L216)
 
 ## 8. Tempfile module
 

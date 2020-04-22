@@ -2,8 +2,6 @@ from inspect import signature, isfunction, isgeneratorfunction
 from typing import *
 
 
-T = TypeVar('T')
-X = TypeVar('X')
 Factory = Callable[[], Any]
 
 
@@ -42,6 +40,3 @@ def get_default_params_from_func(func):
         param.name: param.default for param in sig.parameters.values()
         if param.kind == param.POSITIONAL_OR_KEYWORD and param.default != param.empty
     }
-
-
-# ======== Metaclasses ==========

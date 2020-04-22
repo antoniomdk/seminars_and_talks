@@ -1,5 +1,6 @@
 from typing import *
 from functools import wraps, partial
+from dataclasses import dataclass
 import types
 
 T = TypeVar('T', int, str, float, list, tuple)
@@ -58,6 +59,7 @@ print(my_sum.__annotations__)
 
 def logged_nested(pre_message: str, post_message: str):
     def decorator(function):
+        @wraps(function)
         def wrapper(*args, **kwargs):
             print(pre_message)
             result = function(*args, **kwargs)
@@ -101,7 +103,7 @@ my_sum2(100, 200)
 
 # =========== Class decorator =============
 
-def time_all_class_methods(cls: Type):
+def log_all_class_methods(cls: Type):
     class NewClass(object):
         def __init__(self, *args, **kwargs):
             self.instance = cls(*args, **kwargs)
@@ -121,4 +123,44 @@ def time_all_class_methods(cls: Type):
                 return logged(x)
             else:
                 return x
+
     return NewClass
+
+
+# =========== Metaclasses =============
+import json
+
+
+def json_serializable(cls: Type):
+    to_json = lambda self: json.dumps(vars(self))
+    return type(cls.__name__, (cls,), {'to_json': to_json})
+
+
+@json_serializable
+@dataclass
+class Config:
+    address: str
+    num_workers: int
+
+
+class JsonSerializable(type):
+    def __new__(cls, name, bases, dct):
+        print('Creating class')
+        x = super().__new__(cls, name, bases, dct)
+        x.to_json = lambda self: json.dumps(vars(self))
+        return x
+
+    def __init__(cls, name, bases, dct):
+        print('Initializing class')
+        print(cls, name, bases, dct)
+        super().__init__(name, bases, dct)
+
+    def __call__(cls, *args, **kwargs):
+        print('Creating a new instance')
+        return super(JsonSerializable, cls).__call__(*args, **kwargs)
+
+
+@dataclass
+class ConfigWithMetaclass(metaclass=JsonSerializable):
+    address: str
+    num_workers: int
