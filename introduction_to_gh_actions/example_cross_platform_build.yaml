@@ -1,0 +1,53 @@
+# Adapted from author Edward Thomson -> https://www.edwardthomson.com/blog/github_actions_2_matrixes.html
+
+# Naive Approach
+name: Naive Cross-platform Build
+
+on: [push]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      run: make
+
+  windows:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      run: make
+
+  macos:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      run: make
+
+
+
+# Using matrix strategy
+
+name: Cross-platform Build with matrix strategy
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      run: make
