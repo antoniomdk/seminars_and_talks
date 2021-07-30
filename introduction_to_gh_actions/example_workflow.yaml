@@ -1,0 +1,45 @@
+name: Scraping
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  scraping:
+    name: Scrape UFC data
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: .
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      GCP_API_KEY: ${{ secrets.GCP_API_KEY }}
+      GCP_CUSTOM_SEARCH_ENGINE_ID: ${{ secrets.GCP_CUSTOM_SEARCH_ENGINE_ID }}
+      DATABASE_USER: postgres
+      DATABASE_NAME: postgres
+      DATABASE_HOST: ufc-bot-db.cfpcf1gvcif2.us-east-1.rds.amazonaws.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install dependecies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Scrape fighters
+        run: cd src/scraping && scrapy crawl fighters
+
+      - name: Scrape past bouts
+        run: cd src/scraping && scrapy crawl bouts -a compute_record_before_ufc=True
+
+      - name: Scrape upcoming bouts
+        run: cd src/scraping && scrapy crawl bouts -a upcoming_events=True
+
+      - name: Preprocess data
+        run: python src/preprocessing/preprocess_data.py
