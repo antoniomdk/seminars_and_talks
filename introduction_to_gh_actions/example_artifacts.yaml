@@ -1,0 +1,64 @@
+# Adapted from author Edward Thomson -> https://www.edwardthomson.com/blog/github_actions_2_matrixes.html
+
+# Exammple of uploading artifacts
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+      name: 'Checkout'
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.0.100-preview3-010431'
+      name: 'Setup .NET Core 3'
+    - run: |
+        dotnet restore
+        dotnet build --no-restore --configuration Release
+        dotnet test Tests.csproj --no-build --configuration Release
+        mkdir ${{ github.workspace }}/package
+        dotnet pack --no-build -c Release --output "${{ github.workspace }}/package"
+    - uses: actions/upload-artifact@v1
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/package
+      name: 'Upload Package'
+      
+# Example of retrieving artifacts
+
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+    
+      - name: Build
+        run: make testapp
+      
+      - uses: actions/upload-artifact@v1
+        with:
+          name: tests
+          path: testapp
+
+  test:
+    needs: build
+    strategy:
+      matrix:
+        container: ['ubuntu:20.04', 'debian:buster', 'centos:8', 'alpine:3']
+    runs-on: ubuntu-latest
+    container: ${{matrix.container}}
+    
+    steps:
+    - uses: actions/download-artifact@v1
+      with:
+        name: tests
+    
+    - name: Run Tests
+      run: chmod 0755 tests/testapp && tests/testapp
