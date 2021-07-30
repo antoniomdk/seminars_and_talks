@@ -1,0 +1,36 @@
+# Adapted from author Edward Thomson -> https://www.edwardthomson.com/blog/github_actions_2_matrixes.html
+
+name: CI
+
+on: [push]
+
+jobs:    
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:    
+      matrix:
+        cc: [gcc, clang]
+        curl: [openssl, gnutls, nss]
+
+    steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ${{ matrix.cc }} libcurl4-${{ matrix.curl }}-dev \
+        
+    - name: Display Configuration
+      run: |
+        echo "C Compiler:"
+        ${CC} --version
+        echo ""
+        echo "Curl configuration:"
+        curl-config --ssl-backends --version
+      env:
+        CC: ${{ matrix.cc }}
+
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Build
+      run: ./configure && make test
