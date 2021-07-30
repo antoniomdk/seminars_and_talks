@@ -24,3 +24,68 @@ jobs:
         env:
           PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         if: github.repository == 'antoniomdk/project' && github.event_name == 'push'
+
+
+# Example of conditionals with matrix strategy
+
+name: Build with CMake and Ninja
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Install Dependencies (Linux)
+      run: sudo apt-get install ninja-build
+      if: matrix.os == 'ubuntu-latest'
+      
+    - name: Install Dependencies (Windows)
+      run: choco install ninja
+      if: matrix.os == 'windows-latest'
+      
+    - name: Install Dependencies (macOS)
+      run: brew install ninja
+      if: matrix.os == 'macos-latest'
+      
+    - name: Checkout
+      uses: actions/checkout@v1
+      
+    - name: Setup CMake
+      run: |
+        mkdir "${{ runner.workspace }}/build"
+        cd "${{ runner.workspace }}/build"
+        cmake $GITHUB_WORKSPACE -GNinja
+      shell: bash
+      
+    - name: Build
+      run: cmake --build .
+      working-directory: ${{ runner.workspace }}/build      
+      
+    - name: Test
+      run: ctest -V
+      working-directory: ${{ runner.workspace }}/build
+      
+      
+# Conditionals with shared data:
+ 
+name: CI
+
+on:
+  schedule:
+    - cron: 0 5 * * *
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - run: echo "::set-env name=DAY_OF_WEEK::$( date +%a 
+    
+      - run: echo "Somebody has a case of the mondays!"
+        if: env.DAY_OF_WEEK == 'Mon'
+      
+      - run: echo "This runs every day..."
